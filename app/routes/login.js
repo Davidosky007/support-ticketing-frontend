@@ -11,7 +11,7 @@ export default class LoginRoute extends Route {
     // If already authenticated, redirect to appropriate dashboard
     if (this.session.isAuthenticated) {
       const user = this.session.data.authenticated.user;
-      if (user.isAgent) {
+      if (user.role === 'AGENT') {
         this.router.transitionTo('agent.dashboard');
       } else {
         this.router.transitionTo('customer.tickets');

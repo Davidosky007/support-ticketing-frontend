@@ -48,34 +48,31 @@ export default class RegisterController extends Controller {
         role: this.role,
       });
 
-      // Split name into first name and last name
-      const nameParts = this.name.trim().split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
       const mutation = `
-        mutation Register($input: RegisterInput!) {
-          register(input: $input) {
-            token
+        mutation Register($name: String!, $email: String!, $password: String!, $role: String!) {
+          register(input: {
+            name: $name
+            email: $email
+            password: $password
+            role: $role
+          }) {
             user {
               id
+              name
               email
-              firstName
-              lastName
-              isAgent
+              role
             }
+            token
+            errors
           }
         }
       `;
 
       const variables = {
-        input: {
-          firstName,
-          lastName,
-          email: this.email,
-          password: this.password,
-          isAgent: this.role === 'agent',
-        },
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        role: this.role === 'agent' ? 'AGENT' : 'CUSTOMER',
       };
 
       const response = await fetch(
@@ -95,15 +92,21 @@ export default class RegisterController extends Controller {
       const result = await response.json();
       console.log('Registration response:', result);
 
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
+      if (
+        result.errors ||
+        (result.data?.register?.errors && result.data.register.errors.length > 0)
+      ) {
+        const errorMessage = result.errors
+          ? result.errors[0].message
+          : result.data.register.errors[0];
+        throw new Error(errorMessage);
       }
 
       const { token, user } = result.data.register;
       this.session.authenticate(token, user);
 
       // Redirect based on user role
-      if (user.isAgent) {
+      if (user.role === 'AGENT') {
         this.router.transitionTo('agent.dashboard');
       } else {
         this.router.transitionTo('customer.tickets');
