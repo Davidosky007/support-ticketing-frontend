@@ -3,8 +3,11 @@ import { inject as service } from '@ember/service';
 
 export default class AgentTicketsRoute extends Route {
   @service apollo;
+  @service session;
+  @service router;
 
   async model() {
+    // Instead of accessing the controller, fetch the tickets directly in the model hook
     try {
       const query = `
         query {
@@ -23,10 +26,22 @@ export default class AgentTicketsRoute extends Route {
       `;
 
       const result = await this.apollo.query({ query });
-      return result.tickets;
+      return result.tickets || [];
     } catch (error) {
       console.error('Error fetching tickets:', error);
       return [];
+    }
+  }
+
+  beforeModel() {
+    // Make sure user is authenticated and is an agent
+    if (!this.session.isAuthenticated) {
+      this.router.transitionTo('login');
+      return;
+    }
+
+    if (!this.session.data.authenticated.user.isAgent) {
+      this.router.transitionTo('customer.tickets');
     }
   }
 
