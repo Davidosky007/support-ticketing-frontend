@@ -14,8 +14,12 @@
         <i class="fas fa-sync-alt"></i> Refresh
       </button>
       
-      <button {{on "click" this.downloadTicketsCsv}} class="btn-export">
-        <i class="fas fa-file-download"></i> Export Closed Tickets
+      <button {{on "click" this.downloadTicketsCsv}} class="btn-export" disabled={{this.isLoading}}>
+        {{#if this.isLoading}}
+          <i class="fas fa-spinner fa-spin"></i> Generating...
+        {{else}}
+          <i class="fas fa-file-download"></i> Export Closed Tickets (Last Month)
+        {{/if}}
       </button>
     </div>
   </div>

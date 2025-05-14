@@ -48,53 +48,34 @@ export default class AgentTicketsController extends Controller {
   async downloadTicketsCsv() {
     this.isLoading = true;
     try {
-      // Calculate dates for last month
+      // Calculate last month's date range more precisely
       const today = new Date();
-      const endDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
+      const lastMonth = new Date(today);
+      lastMonth.setMonth(today.getMonth() - 1);
+      
+      // First day of last month
+      const startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+      // Last day of last month
+      const endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+      
+      console.log(`Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+      
+      // Use the generateTicketsCsv method from the route
+      const csvUrl = await this.target.currentRoute.instance.generateTicketsCsv(
+        'CLOSED', 
+        startDate.toISOString(), 
+        endDate.toISOString()
       );
-      const startDate = new Date(
-        today.getFullYear(),
-        today.getMonth() - 1,
-        today.getDate(),
-      );
-
-      const mutation = `
-        mutation GenerateTicketsCsv($status: String, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
-          generateTicketsCsv(input: {
-            status: "CLOSED",
-            startDate: $startDate,
-            endDate: $endDate
-          }) {
-            url
-            errors
-          }
-        }
-      `;
-
-      const variables = {
-        status: 'CLOSED',
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-      };
-
-      console.log('Generating CSV with variables:', variables);
-      const result = await this.apollo.mutate({ mutation, variables });
-
-      if (
-        result.generateTicketsCsv.errors &&
-        result.generateTicketsCsv.errors.length > 0
-      ) {
-        throw new Error(result.generateTicketsCsv.errors[0]);
+      
+      // Open CSV in new window
+      if (csvUrl) {
+        window.open(csvUrl, '_blank');
+      } else {
+        throw new Error('No URL returned for CSV download');
       }
-
-      // Open the CSV file URL in a new tab
-      window.open(result.generateTicketsCsv.url, '_blank');
     } catch (error) {
       console.error('Error generating CSV:', error);
-      alert('Error generating CSV: ' + error.message);
+      alert(`Error generating CSV: ${error.message}`);
     } finally {
       this.isLoading = false;
     }
