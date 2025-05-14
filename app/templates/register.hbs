@@ -1,0 +1,39 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Create an Account</h2>
+    
+    <form {{on "submit" this.handleRegister}}>
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" placeholder="John" value={{this.firstName}} {{on "input" this.updateFirstName}} required>
+      </div>
+      
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" placeholder="Doe" value={{this.lastName}} {{on "input" this.updateLastName}} required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="your@email.com" value={{this.email}} {{on "input" this.updateEmail}} required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" value={{this.password}} {{on "input" this.updatePassword}} required>
+      </div>
+      
+      {{#if this.errorMessage}}
+        <div class="error-message">{{this.errorMessage}}</div>
+      {{/if}}
+      
+      <button type="submit" class="btn btn-primary btn-block" disabled={{this.isLoading}}>
+        {{#if this.isLoading}}Creating account...{{else}}Create Account{{/if}}
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      <p>Already have an account? <a href="/login">Log In</a></p>
+    </div>
+  </div>
+</div>

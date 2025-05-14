@@ -1,7 +1,26 @@
-{{page-title "SupportTicketingFrontend"}}
+{{page-title "Support Ticketing System"}}
 
-{{outlet}}
+<div class="app-container">
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="/" class="logo">Support Ticketing</a>
+      </div>
+      
+      <nav class="navbar-menu">
+        <a href="/login" class="nav-item btn-login">Login</a>
+        <a href="/register" class="nav-item btn-signup">Sign Up</a>
+      </nav>
+    </div>
+  </header>
 
-{{! The following component displays Ember's default welcome message. }}
-<WelcomePage />
-{{! Feel free to remove this! }}
+  <main>
+    {{outlet}}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2023 Support Ticketing System</p>
+    </div>
+  </footer>
+</div>
