@@ -64,13 +64,13 @@ export default class AgentTicketController extends Controller {
   @action
   async addComment(event) {
     event.preventDefault();
-    
+
     if (!this.newComment.trim()) {
       return;
     }
-    
+
     this.isSubmitting = true;
-    
+
     try {
       const mutation = `
         mutation CreateComment($ticketId: ID!, $content: String!) {
@@ -92,21 +92,27 @@ export default class AgentTicketController extends Controller {
           }
         }
       `;
-      
+
       const variables = {
         ticketId: this.model.id,
-        content: this.newComment
+        content: this.newComment,
       };
-      
+
       const result = await this.apollo.mutate({ mutation, variables });
-      
-      if (result.createComment.errors && result.createComment.errors.length > 0) {
+
+      if (
+        result.createComment.errors &&
+        result.createComment.errors.length > 0
+      ) {
         throw new Error(result.createComment.errors[0]);
       }
-      
+
       // Add the new comment to the model's comments
-      this.model.comments = [...this.model.comments, result.createComment.comment];
-      
+      this.model.comments = [
+        ...this.model.comments,
+        result.createComment.comment,
+      ];
+
       // Clear the comment input
       this.newComment = '';
     } catch (error) {
@@ -120,7 +126,7 @@ export default class AgentTicketController extends Controller {
   @action
   async updateTicketStatus(status) {
     this.isLoading = true;
-    
+
     try {
       const mutation = `
         mutation UpdateTicketStatus($ticketId: ID!, $status: String!) {
@@ -136,18 +142,21 @@ export default class AgentTicketController extends Controller {
           }
         }
       `;
-      
+
       const variables = {
         ticketId: this.model.id,
-        status: status
+        status: status,
       };
-      
+
       const result = await this.apollo.mutate({ mutation, variables });
-      
-      if (result.updateTicketStatus.errors && result.updateTicketStatus.errors.length > 0) {
+
+      if (
+        result.updateTicketStatus.errors &&
+        result.updateTicketStatus.errors.length > 0
+      ) {
         throw new Error(result.updateTicketStatus.errors[0]);
       }
-      
+
       // Update the model's status
       this.model.status = result.updateTicketStatus.ticket.status;
     } catch (error) {

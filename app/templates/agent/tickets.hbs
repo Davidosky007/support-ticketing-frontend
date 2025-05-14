@@ -9,8 +9,13 @@
         <option value="RESOLVED" selected={{eq this.statusFilter "RESOLVED"}}>Resolved</option>
         <option value="CLOSED" selected={{eq this.statusFilter "CLOSED"}}>Closed</option>
       </select>
+      
       <button {{on "click" this.refreshTickets}} class="btn-refresh">
         <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+      
+      <button {{on "click" this.downloadTicketsCsv}} class="btn-export">
+        <i class="fas fa-file-download"></i> Export Closed Tickets
       </button>
     </div>
   </div>

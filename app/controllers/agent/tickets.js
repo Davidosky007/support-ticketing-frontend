@@ -45,6 +45,62 @@ export default class AgentTicketsController extends Controller {
   }
 
   @action
+  async downloadTicketsCsv() {
+    this.isLoading = true;
+    try {
+      // Calculate dates for last month
+      const today = new Date();
+      const endDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      );
+      const startDate = new Date(
+        today.getFullYear(),
+        today.getMonth() - 1,
+        today.getDate(),
+      );
+
+      const mutation = `
+        mutation GenerateTicketsCsv($status: String, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+          generateTicketsCsv(input: {
+            status: "CLOSED",
+            startDate: $startDate,
+            endDate: $endDate
+          }) {
+            url
+            errors
+          }
+        }
+      `;
+
+      const variables = {
+        status: 'CLOSED',
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      };
+
+      console.log('Generating CSV with variables:', variables);
+      const result = await this.apollo.mutate({ mutation, variables });
+
+      if (
+        result.generateTicketsCsv.errors &&
+        result.generateTicketsCsv.errors.length > 0
+      ) {
+        throw new Error(result.generateTicketsCsv.errors[0]);
+      }
+
+      // Open the CSV file URL in a new tab
+      window.open(result.generateTicketsCsv.url, '_blank');
+    } catch (error) {
+      console.error('Error generating CSV:', error);
+      alert('Error generating CSV: ' + error.message);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  @action
   async assignTicket(ticketId) {
     this.isLoading = true;
     try {
@@ -74,13 +130,13 @@ export default class AgentTicketsController extends Controller {
     if (!this.selectedFile) {
       return;
     }
-    
+
     this.uploadingFile = true;
-    
+
     try {
       // Read file as base64
       const base64Content = await this.readFileAsBase64(this.selectedFile);
-      
+
       const mutation = `
         mutation UploadAttachment($ticketId: ID!, $file: String!, $filename: String!, $contentType: String!) {
           uploadAttachment(input: {
@@ -100,23 +156,26 @@ export default class AgentTicketsController extends Controller {
           }
         }
       `;
-      
+
       const variables = {
         ticketId,
         file: base64Content,
         filename: this.selectedFile.name,
-        contentType: this.selectedFile.type
+        contentType: this.selectedFile.type,
       };
-      
+
       const result = await this.apollo.mutate({ mutation, variables });
-      
-      if (result.uploadAttachment.errors && result.uploadAttachment.errors.length > 0) {
+
+      if (
+        result.uploadAttachment.errors &&
+        result.uploadAttachment.errors.length > 0
+      ) {
         throw new Error(result.uploadAttachment.errors[0]);
       }
-      
+
       // Clear the selected file
       this.selectedFile = null;
-      
+
       // Return the attachment
       return result.uploadAttachment.attachment;
     } catch (error) {
