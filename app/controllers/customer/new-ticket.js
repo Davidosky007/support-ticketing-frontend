@@ -43,14 +43,17 @@ export default class CustomerNewTicketController extends Controller {
       const mutation = `
         mutation CreateTicket($input: CreateTicketInput!) {
           createTicket(input: $input) {
-            id
-            subject
-            description
-            status
-            customer {
+            ticket {
               id
-              name
+              subject
+              description
+              status
+              customer {
+                id
+                name
+              }
             }
+            errors
           }
         }
       `;
@@ -63,7 +66,7 @@ export default class CustomerNewTicketController extends Controller {
       };
 
       const result = await this.apollo.mutate({ mutation, variables });
-      const ticketId = result.createTicket.id;
+      const ticketId = result.createTicket.ticket.id;
 
       // If there are files, upload them
       if (this.selectedFiles.length > 0) {
