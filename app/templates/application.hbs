@@ -10,16 +10,16 @@
       <nav class="navbar-menu">
         {{#if this.session.isAuthenticated}}
           {{#if this.session.isAgent}}
-            <a href="/agent/dashboard" class="nav-item">Dashboard</a>
-            <a href="/agent/tickets" class="nav-item">Tickets</a>
+            <LinkTo @route="agent.dashboard" class="nav-item">Dashboard</LinkTo>
+            <LinkTo @route="agent.tickets" class="nav-item">Tickets</LinkTo>
           {{else}}
-            <a href="/customer/tickets" class="nav-item">My Tickets</a>
-            <a href="/customer/new-ticket" class="nav-item">New Ticket</a>
+            <LinkTo @route="customer.tickets" class="nav-item">My Tickets</LinkTo>
+            <LinkTo @route="customer.new-ticket" class="nav-item">New Ticket</LinkTo>
           {{/if}}
           <button class="nav-item btn-logout" {{on "click" this.logout}}>Logout</button>
         {{else}}
-          <a href="/login" class="nav-item btn-login">Login</a>
-          <a href="/register" class="nav-item btn-signup">Sign Up</a>
+          <LinkTo @route="login" class="nav-item btn-login">Login</LinkTo>
+          <LinkTo @route="register" class="nav-item btn-signup">Sign Up</LinkTo>
         {{/if}}
       </nav>
     </div>

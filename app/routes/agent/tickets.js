@@ -7,7 +7,6 @@ export default class AgentTicketsRoute extends Route {
   @service router;
 
   async model() {
-    // Instead of accessing the controller, fetch the tickets directly in the model hook
     try {
       const query = `
         query {
@@ -18,6 +17,10 @@ export default class AgentTicketsRoute extends Route {
             createdAt
             updatedAt
             customer {
+              id
+              name
+            }
+            agent {
               id
               name
             }
@@ -50,7 +53,7 @@ export default class AgentTicketsRoute extends Route {
     controller.tickets = model;
     controller.isLoading = false;
 
-    // Add methods to the controller for status updates and CSV generation
+    // Keep only these if needed:
     controller.updateTicketStatus = this.updateTicketStatus.bind(this);
     controller.generateTicketsCsv = this.generateTicketsCsv.bind(this);
   }
@@ -126,6 +129,39 @@ export default class AgentTicketsRoute extends Route {
       return result.generateTicketsCsv.url;
     } catch (error) {
       console.error('Error generating tickets CSV:', error);
+      throw error;
+    }
+  }
+
+  async assignTicket(ticketId) {
+    try {
+      const mutation = `
+        mutation AssignTicket($ticketId: ID!) {
+          assignTicket(input: { ticketId: $ticketId }) {
+            ticket {
+              id
+              status
+              agent {
+                id
+                name
+              }
+            }
+            errors
+          }
+        }
+      `;
+
+      const variables = { ticketId };
+
+      const result = await this.apollo.mutate({ mutation, variables });
+
+      if (result.assignTicket.errors && result.assignTicket.errors.length > 0) {
+        throw new Error(result.assignTicket.errors[0]);
+      }
+
+      return result.assignTicket.ticket;
+    } catch (error) {
+      console.error('Error assigning ticket:', error);
       throw error;
     }
   }

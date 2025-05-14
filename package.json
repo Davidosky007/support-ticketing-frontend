@@ -60,6 +60,7 @@
     "ember-source": "~6.4.0",
     "ember-template-imports": "^4.3.0",
     "ember-template-lint": "^6.1.0",
+    "ember-truth-helpers": "^4.0.3",
     "ember-welcome-page": "^7.0.2",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^9.1.0",
