@@ -34,7 +34,10 @@ export default class LoginController extends Controller {
 
       const mutation = `
         mutation Login($email: String!, $password: String!) {
-          login(email: $email, password: $password) {
+          login(input: {
+            email: $email
+            password: $password
+          }) {
             token
             user {
               id
