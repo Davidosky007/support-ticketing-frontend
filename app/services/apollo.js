@@ -51,4 +51,35 @@ export default class ApolloService extends Service {
       throw error;
     }
   }
+
+  // Fetches the currently authenticated user
+  async getCurrentUser() {
+    if (!this.session.isAuthenticated) {
+      return null;
+    }
+    
+    const query = `
+      query {
+        currentUser {
+          id
+          name
+          email
+          role
+          tickets {
+            id
+            subject
+            status
+          }
+        }
+      }
+    `;
+    
+    try {
+      const data = await this.query({ query });
+      return data.currentUser;
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+      return null;
+    }
+  }
 }
