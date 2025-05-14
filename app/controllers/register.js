@@ -48,6 +48,7 @@ export default class RegisterController extends Controller {
         role: this.role,
       });
 
+      // Expected register mutation structure
       const mutation = `
         mutation Register($name: String!, $email: String!, $password: String!, $role: String!) {
           register(input: {
@@ -94,7 +95,8 @@ export default class RegisterController extends Controller {
 
       if (
         result.errors ||
-        (result.data?.register?.errors && result.data.register.errors.length > 0)
+        (result.data?.register?.errors &&
+          result.data.register.errors.length > 0)
       ) {
         const errorMessage = result.errors
           ? result.errors[0].message
