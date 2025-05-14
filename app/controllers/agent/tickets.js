@@ -52,21 +52,27 @@ export default class AgentTicketsController extends Controller {
       const today = new Date();
       const lastMonth = new Date(today);
       lastMonth.setMonth(today.getMonth() - 1);
-      
+
       // First day of last month
-      const startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+      const startDate = new Date(
+        lastMonth.getFullYear(),
+        lastMonth.getMonth(),
+        1,
+      );
       // Last day of last month
       const endDate = new Date(today.getFullYear(), today.getMonth(), 0);
-      
-      console.log(`Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`);
-      
+
+      console.log(
+        `Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`,
+      );
+
       // Use the generateTicketsCsv method from the route
       const csvUrl = await this.target.currentRoute.instance.generateTicketsCsv(
-        'CLOSED', 
-        startDate.toISOString(), 
-        endDate.toISOString()
+        'CLOSED',
+        startDate.toISOString(),
+        endDate.toISOString(),
       );
-      
+
       // Open CSV in new window
       if (csvUrl) {
         window.open(csvUrl, '_blank');

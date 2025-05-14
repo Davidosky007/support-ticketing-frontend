@@ -59,4 +59,60 @@ export default class AgentDashboardController extends Controller {
       this.isLoading = false;
     }
   }
+
+  @action
+  async downloadTicketsCsv() {
+    this.isLoading = true;
+    try {
+      // Calculate dates for last month
+      const today = new Date();
+      const endDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      );
+      const startDate = new Date(
+        today.getFullYear(),
+        today.getMonth() - 1,
+        today.getDate(),
+      );
+
+      const mutation = `
+        mutation GenerateTicketsCsv($status: String!, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+          generateTicketsCsv(input: {
+            status: $status,
+            startDate: $startDate,
+            endDate: $endDate
+          }) {
+            url
+            errors
+          }
+        }
+      `;
+
+      const variables = {
+        status: 'CLOSED', // This needs to match the $status variable in the mutation
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      };
+
+      console.log('Generating CSV with variables:', variables);
+      const result = await this.apollo.mutate({ mutation, variables });
+
+      if (
+        result.generateTicketsCsv.errors &&
+        result.generateTicketsCsv.errors.length > 0
+      ) {
+        throw new Error(result.generateTicketsCsv.errors[0]);
+      }
+
+      // Open the CSV file URL in a new tab
+      window.open(result.generateTicketsCsv.url, '_blank');
+    } catch (error) {
+      console.error('Error generating CSV:', error);
+      alert('Error generating CSV: ' + error.message);
+    } finally {
+      this.isLoading = false;
+    }
+  }
 }

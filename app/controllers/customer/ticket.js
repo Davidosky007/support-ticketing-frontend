@@ -59,13 +59,19 @@ export default class CustomerTicketController extends Controller {
       };
 
       const result = await this.apollo.mutate({ mutation, variables });
-      
-      if (result.createComment.errors && result.createComment.errors.length > 0) {
+
+      if (
+        result.createComment.errors &&
+        result.createComment.errors.length > 0
+      ) {
         throw new Error(result.createComment.errors[0]);
       }
 
       // Add the new comment to the ticket
-      this.ticket.comments = [...this.ticket.comments, result.createComment.comment];
+      this.ticket.comments = [
+        ...this.ticket.comments,
+        result.createComment.comment,
+      ];
 
       // Clear the comment input
       this.newComment = '';
