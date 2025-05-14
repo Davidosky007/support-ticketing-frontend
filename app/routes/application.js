@@ -5,11 +5,20 @@ export default class ApplicationRoute extends Route {
   @service session;
   @service router;
 
-  beforeModel() {
-    // Restore session but don't redirect from public routes
+  beforeModel(transition) {
+    // Restore session
     this.session.restore();
 
-    // For now, let all routes through without authentication checks
-    // We'll add authentication checks back once the basic UI is working
+    // Define public routes that don't require authentication
+    const publicRoutes = ['index', 'login', 'register', 'unauthorized'];
+
+    // If user is not authenticated and tries to access a protected route, redirect to login
+    if (
+      !this.session.isAuthenticated &&
+      !publicRoutes.includes(transition.to?.name) &&
+      transition.to?.name !== 'application'
+    ) {
+      this.router.transitionTo('login');
+    }
   }
 }

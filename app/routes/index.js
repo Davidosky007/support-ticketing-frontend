@@ -1,5 +1,11 @@
 import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
 export default class IndexRoute extends Route {
-  // This is a simple route that renders the index template
+  @service session;
+
+  // Index route is public, but we want to ensure session is restored
+  beforeModel() {
+    this.session.restore();
+  }
 }

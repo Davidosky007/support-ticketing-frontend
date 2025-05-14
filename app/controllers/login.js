@@ -74,11 +74,18 @@ export default class LoginController extends Controller {
       const { token, user } = result.data.login;
       this.session.authenticate(token, user);
 
-      // Redirect based on user role
-      if (user.isAgent) {
-        this.router.transitionTo('agent.dashboard');
+      // Check if there was an attempted transition and redirect there
+      const attemptedTransition = this.session.attemptedTransition;
+      if (attemptedTransition) {
+        this.session.attemptedTransition = null;
+        attemptedTransition.retry();
       } else {
-        this.router.transitionTo('customer.tickets');
+        // Otherwise redirect based on user role
+        if (user.isAgent) {
+          this.router.transitionTo('agent.dashboard');
+        } else {
+          this.router.transitionTo('customer.tickets');
+        }
       }
     } catch (error) {
       console.error('Login error:', error);

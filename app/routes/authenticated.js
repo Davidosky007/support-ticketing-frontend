@@ -5,9 +5,13 @@ export default class AuthenticatedRoute extends Route {
   @service session;
   @service router;
 
-  beforeModel() {
+  beforeModel(transition) {
+    this.session.restore();
+
     if (!this.session.isAuthenticated) {
-      this.router.transitionTo('unauthorized');
+      // Save the attempted transition to redirect after login
+      this.session.attemptedTransition = transition;
+      this.router.transitionTo('login');
     }
   }
 }

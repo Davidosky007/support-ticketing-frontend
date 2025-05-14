@@ -10,6 +10,9 @@ export default class SessionService extends Service {
     },
   };
 
+  // Store the transition that was attempted before authentication
+  attemptedTransition = null;
+
   constructor() {
     super(...arguments);
     this.restore();
