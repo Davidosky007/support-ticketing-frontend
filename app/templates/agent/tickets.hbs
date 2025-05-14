@@ -1,0 +1,59 @@
+<div class="tickets-container">
+  <div class="tickets-header">
+    <h2>All Support Tickets</h2>
+    <div class="filter-controls">
+      <select {{on "change" this.changeStatusFilter}}>
+        <option value="ALL" selected={{eq this.statusFilter "ALL"}}>All Statuses</option>
+        <option value="OPEN" selected={{eq this.statusFilter "OPEN"}}>Open</option>
+        <option value="IN_PROGRESS" selected={{eq this.statusFilter "IN_PROGRESS"}}>In Progress</option>
+        <option value="RESOLVED" selected={{eq this.statusFilter "RESOLVED"}}>Resolved</option>
+        <option value="CLOSED" selected={{eq this.statusFilter "CLOSED"}}>Closed</option>
+      </select>
+      <button {{on "click" this.refreshTickets}} class="btn-refresh">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  {{#if this.isLoading}}
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i> Loading tickets...
+    </div>
+  {{else if this.filteredTickets.length}}
+    <div class="tickets-list">
+      <div class="tickets-grid tickets-grid-header">
+        <div class="ticket-id">ID</div>
+        <div class="ticket-subject">Subject</div>
+        <div class="ticket-customer">Customer</div>
+        <div class="ticket-status">Status</div>
+        <div class="ticket-date">Created</div>
+        <div class="ticket-actions">Actions</div>
+      </div>
+      
+      {{#each this.filteredTickets as |ticket|}}
+        <div class="tickets-grid ticket-row {{ticket.status}}">
+          <div class="ticket-id">{{ticket.id}}</div>
+          <div class="ticket-subject">{{ticket.subject}}</div>
+          <div class="ticket-customer">{{ticket.customer.name}}</div>
+          <div class="ticket-status">
+            <span class="status-badge {{ticket.status}}">{{ticket.status}}</span>
+          </div>
+          <div class="ticket-date">{{format-date ticket.createdAt}}</div>
+          <div class="ticket-actions">
+            <LinkTo @route="agent.ticket" @model={{ticket.id}} class="btn-view">
+              <i class="fas fa-eye"></i> View
+            </LinkTo>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="fas fa-ticket-alt"></i>
+      </div>
+      <h3>No tickets found</h3>
+      <p>There are no tickets matching your filters.</p>
+    </div>
+  {{/if}}
+</div>
