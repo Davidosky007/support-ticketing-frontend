@@ -47,6 +47,10 @@ export default class CustomerNewTicketController extends Controller {
             subject
             description
             status
+            customer {
+              id
+              name
+            }
           }
         }
       `;
@@ -79,59 +83,48 @@ export default class CustomerNewTicketController extends Controller {
 
   async uploadFiles(ticketId) {
     const uploadPromises = Array.from(this.selectedFiles).map(async (file) => {
-      // Create form data for file upload
-      const formData = new FormData();
-      formData.append(
-        'operations',
-        JSON.stringify({
-          query: `
-          mutation UploadFile($ticketId: ID!, $file: Upload!) {
-            uploadFile(ticketId: $ticketId, file: $file) {
-              id
-              filename
-              contentType
-              url
+      try {
+        // Read file as base64
+        const base64Content = await this.readFileAsBase64(file);
+
+        const mutation = `
+          mutation UploadAttachment($ticketId: ID!, $file: String!, $filename: String!, $contentType: String!) {
+            uploadAttachment(input: {
+              ticketId: $ticketId
+              file: $file
+              filename: $filename
+              contentType: $contentType
+            }) {
+              success
+              attachment {
+                id
+                filename
+                contentType
+                url
+              }
+              errors
             }
           }
-        `,
-          variables: {
-            ticketId: ticketId,
-            file: null, // This will be replaced by the file
-          },
-        }),
-      );
+        `;
 
-      // Map where the file should go in the variables
-      formData.append(
-        'map',
-        JSON.stringify({
-          0: ['variables.file'],
-        }),
-      );
+        const variables = {
+          ticketId,
+          file: base64Content,
+          filename: file.name,
+          contentType: file.type,
+        };
 
-      // Add the actual file
-      formData.append('0', file);
+        // Use apollo client for the mutation
+        const result = await this.apollo.mutate({ mutation, variables });
 
-      try {
-        // Send the request directly (since Apollo Client might not handle file uploads properly)
-        const response = await fetch(
-          'https://support-ticketing-backend.onrender.com/graphql',
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-            },
-            body: formData,
-          },
-        );
-
-        const result = await response.json();
-
-        if (result.errors) {
-          throw new Error(result.errors[0].message);
+        if (
+          result.uploadAttachment.errors &&
+          result.uploadAttachment.errors.length > 0
+        ) {
+          throw new Error(result.uploadAttachment.errors[0]);
         }
 
-        return result.data.uploadFile;
+        return result.uploadAttachment.attachment;
       } catch (error) {
         console.error(`Error uploading file ${file.name}:`, error);
         throw error;
@@ -139,5 +132,19 @@ export default class CustomerNewTicketController extends Controller {
     });
 
     return Promise.all(uploadPromises);
+  }
+
+  // Helper function to read file as base64
+  readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // Get the base64 string by removing the prefix (e.g., "data:image/jpeg;base64,")
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
   }
 }
