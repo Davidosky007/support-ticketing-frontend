@@ -42,17 +42,17 @@ export default class RegisterController extends Controller {
     this.errorMessage = null;
 
     try {
-      console.log('Attempting registration:', { 
-        email: this.email, 
+      console.log('Attempting registration:', {
+        email: this.email,
         name: this.name,
-        role: this.role
+        role: this.role,
       });
-      
+
       // Split name into first name and last name
       const nameParts = this.name.trim().split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
-      
+
       const mutation = `
         mutation Register($input: RegisterInput!) {
           register(input: $input) {
@@ -68,34 +68,37 @@ export default class RegisterController extends Controller {
         }
       `;
 
-      const variables = { 
+      const variables = {
         input: {
           firstName,
           lastName,
           email: this.email,
           password: this.password,
-          isAgent: this.role === 'agent'
-        } 
-      };
-      
-      const response = await fetch('https://support-ticketing-backend.onrender.com/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+          isAgent: this.role === 'agent',
         },
-        body: JSON.stringify({
-          query: mutation,
-          variables
-        }),
-      });
-      
+      };
+
+      const response = await fetch(
+        'https://support-ticketing-backend.onrender.com/graphql',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: mutation,
+            variables,
+          }),
+        },
+      );
+
       const result = await response.json();
       console.log('Registration response:', result);
-      
+
       if (result.errors) {
         throw new Error(result.errors[0].message);
       }
-      
+
       const { token, user } = result.data.register;
       this.session.authenticate(token, user);
 
@@ -107,7 +110,8 @@ export default class RegisterController extends Controller {
       }
     } catch (error) {
       console.error('Registration error:', error);
-      this.errorMessage = error.message || 'Registration failed. Please try again.';
+      this.errorMessage =
+        error.message || 'Registration failed. Please try again.';
     } finally {
       this.isLoading = false;
     }

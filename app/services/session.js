@@ -46,9 +46,11 @@ export default class SessionService extends Service {
       this.isAuthenticated = true;
     }
   }
-  
+
   // Helper property to check if the user is an agent
   get isAgent() {
-    return this.isAuthenticated && this.data.authenticated.user.role === 'AGENT';
+    return (
+      this.isAuthenticated && this.data.authenticated.user.role === 'AGENT'
+    );
   }
 }

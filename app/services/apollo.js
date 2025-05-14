@@ -57,7 +57,7 @@ export default class ApolloService extends Service {
     if (!this.session.isAuthenticated) {
       return null;
     }
-    
+
     const query = `
       query {
         currentUser {
@@ -73,7 +73,7 @@ export default class ApolloService extends Service {
         }
       }
     `;
-    
+
     try {
       const data = await this.query({ query });
       return data.currentUser;

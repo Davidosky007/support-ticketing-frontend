@@ -47,9 +47,9 @@ export default class LoginController extends Controller {
         }
       `;
 
-      const variables = { 
-        email: this.email, 
-        password: this.password 
+      const variables = {
+        email: this.email,
+        password: this.password,
       };
 
       // Direct fetch approach for debugging
@@ -70,9 +70,12 @@ export default class LoginController extends Controller {
       const result = await response.json();
       console.log('Login response:', result);
 
-      if (result.errors || (result.data?.login?.errors && result.data.login.errors.length > 0)) {
-        const errorMessage = result.errors 
-          ? result.errors[0].message 
+      if (
+        result.errors ||
+        (result.data?.login?.errors && result.data.login.errors.length > 0)
+      ) {
+        const errorMessage = result.errors
+          ? result.errors[0].message
           : result.data.login.errors[0];
         throw new Error(errorMessage);
       }
