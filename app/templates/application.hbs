@@ -9,7 +9,7 @@
       
       <nav class="navbar-menu">
         {{#if this.session.isAuthenticated}}
-          {{#if this.session.data.authenticated.user.isAgent}}
+          {{#if this.session.isAgent}}
             <a href="/agent/dashboard" class="nav-item">Dashboard</a>
             <a href="/agent/tickets" class="nav-item">Tickets</a>
           {{else}}

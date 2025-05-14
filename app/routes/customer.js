@@ -9,7 +9,7 @@ export default class CustomerRoute extends AuthenticatedRoute {
     super.beforeModel(...arguments);
 
     const user = this.session.data.authenticated.user;
-    if (user && user.isAgent) {
+    if (user && user.role === 'AGENT') {
       // Redirect agents to agent dashboard if they try to access customer routes
       this.router.transitionTo('agent.dashboard');
     }

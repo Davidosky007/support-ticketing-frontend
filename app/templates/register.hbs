@@ -4,13 +4,8 @@
     
     <form {{on "submit" this.handleRegister}}>
       <div class="form-group">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" placeholder="John" value={{this.firstName}} {{on "input" this.updateFirstName}} required>
-      </div>
-      
-      <div class="form-group">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" placeholder="Doe" value={{this.lastName}} {{on "input" this.updateLastName}} required>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="John Doe" value={{this.name}} {{on "input" this.updateName}} required>
       </div>
       
       <div class="form-group">
@@ -21,6 +16,20 @@
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="••••••••" value={{this.password}} {{on "input" this.updatePassword}} required>
+      </div>
+      
+      <div class="form-group">
+        <label>Account Type</label>
+        <div class="role-options">
+          <label class="role-radio">
+            <input type="radio" name="role" value="customer" checked={{eq this.role "customer"}} {{on "change" (fn this.setRole "customer")}}>
+            <span class="role-label">Customer</span>
+          </label>
+          <label class="role-radio">
+            <input type="radio" name="role" value="agent" checked={{eq this.role "agent"}} {{on "change" (fn this.setRole "agent")}}>
+            <span class="role-label">Support Agent</span>
+          </label>
+        </div>
       </div>
       
       {{#if this.errorMessage}}

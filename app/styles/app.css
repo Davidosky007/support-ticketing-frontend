@@ -358,6 +358,80 @@ body {
   text-decoration: underline;
 }
 
+/* Role selection */
+.role-selection {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.role-option {
+  flex: 1;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.role-option:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+.role-option.selected {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.role-icon {
+  font-size: 1.5rem;
+  color: #4b5563;
+  margin-right: 1rem;
+}
+
+.role-option.selected .role-icon {
+  color: #3b82f6;
+}
+
+.role-details h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.role-details p {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Role options */
+.role-options {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.role-radio {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.role-radio input {
+  margin-right: 0.5rem;
+  width: auto;
+}
+
+.role-label {
+  font-weight: 500;
+  color: #4b5563;
+}
+
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
   .hero h1 {

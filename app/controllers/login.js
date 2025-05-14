@@ -39,15 +39,18 @@ export default class LoginController extends Controller {
             user {
               id
               email
-              firstName
-              lastName
-              isAgent
+              name
+              role
             }
+            errors
           }
         }
       `;
 
-      const variables = { email: this.email, password: this.password };
+      const variables = { 
+        email: this.email, 
+        password: this.password 
+      };
 
       // Direct fetch approach for debugging
       const response = await fetch(
@@ -67,8 +70,11 @@ export default class LoginController extends Controller {
       const result = await response.json();
       console.log('Login response:', result);
 
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
+      if (result.errors || (result.data?.login?.errors && result.data.login.errors.length > 0)) {
+        const errorMessage = result.errors 
+          ? result.errors[0].message 
+          : result.data.login.errors[0];
+        throw new Error(errorMessage);
       }
 
       const { token, user } = result.data.login;
@@ -81,7 +87,7 @@ export default class LoginController extends Controller {
         attemptedTransition.retry();
       } else {
         // Otherwise redirect based on user role
-        if (user.isAgent) {
+        if (user.role === 'AGENT') {
           this.router.transitionTo('agent.dashboard');
         } else {
           this.router.transitionTo('customer.tickets');
