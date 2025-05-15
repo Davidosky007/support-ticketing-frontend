@@ -7,7 +7,7 @@
           {{#if this.isLoading}}
             <i class="fas fa-spinner fa-spin"></i> Generating...
           {{else}}
-            <i class="fas fa-file-download"></i> Export Closed Tickets (Last 90 Days)
+            <i class="fas fa-file-download"></i> Export Closed Tickets (Last 30 Days)
           {{/if}}
         </button>
         {{#if this.downloadError}}
@@ -20,7 +20,7 @@
         {{/if}}
         <div class="tooltip">
           <i class="fas fa-info-circle"></i>
-          <span class="tooltip-text">Exports closed tickets from the last 90 days in CSV format. The backend may take a moment to generate the file.</span>
+          <span class="tooltip-text">Exports closed tickets from the last 30 days in CSV format. The backend may take a moment to generate the file.</span>
         </div>
       </div>
     </div>
