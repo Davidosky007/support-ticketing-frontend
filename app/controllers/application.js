@@ -11,7 +11,7 @@ export default class ApplicationController extends Controller {
   }
 
   @action
-  logout() {
+  invalidateSession() {
     this.session.invalidate();
     this.router.transitionTo('index');
   }
