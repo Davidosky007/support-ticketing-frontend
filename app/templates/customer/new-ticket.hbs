@@ -2,51 +2,53 @@
   <div class="new-ticket-header">
     <h2>Create New Support Ticket</h2>
     <LinkTo @route="customer.tickets" class="btn btn-secondary">
-      <i class="fas fa-times"></i> Cancel
+      <i class="fas fa-times"></i>
+      Cancel
     </LinkTo>
   </div>
-  
+
   <form class="ticket-form" {{on "submit" this.submitTicket}}>
     <div class="form-group">
       <label for="subject">Subject</label>
-      <input 
-        type="text" 
-        id="subject" 
-        placeholder="Brief description of your issue" 
-        value={{this.subject}} 
+      <input
+        type="text"
+        id="subject"
+        placeholder="Brief description of your issue"
+        value={{this.subject}}
         {{on "input" this.updateSubject}}
         required
-      >
+      />
     </div>
-    
+
     <div class="form-group">
       <label for="description">Description</label>
-      <textarea 
-        id="description" 
-        placeholder="Please provide all relevant details about your issue..." 
-        value={{this.description}} 
+      <textarea
+        id="description"
+        placeholder="Please provide all relevant details about your issue..."
+        value={{this.description}}
         {{on "input" this.updateDescription}}
         rows="6"
         required
       ></textarea>
     </div>
-    
+
     <div class="form-group">
       <label>Attachments (optional)</label>
       <div class="file-upload-container">
-        <input 
-          type="file" 
-          id="attachments" 
-          multiple 
+        <input
+          type="file"
+          id="attachments"
+          multiple
           {{on "change" this.handleFileChange}}
-        >
+        />
         <label for="attachments" class="file-upload-label">
           <i class="fas fa-cloud-upload-alt"></i>
           Choose Files
         </label>
         <span class="file-upload-info">
           {{#if this.selectedFiles.length}}
-            {{this.selectedFiles.length}} file(s) selected
+            {{this.selectedFiles.length}}
+            file(s) selected
           {{else}}
             No files selected
           {{/if}}
@@ -56,25 +58,33 @@
         <div class="selected-files">
           {{#each this.selectedFileNames as |fileName|}}
             <div class="selected-file">
-              <i class="fas fa-file"></i> {{fileName}}
+              <i class="fas fa-file"></i>
+              {{fileName}}
             </div>
           {{/each}}
         </div>
       {{/if}}
     </div>
-    
+
     {{#if this.errorMessage}}
       <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i> {{this.errorMessage}}
+        <i class="fas fa-exclamation-circle"></i>
+        {{this.errorMessage}}
       </div>
     {{/if}}
-    
+
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary" disabled={{this.isSubmitting}}>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        disabled={{this.isSubmitting}}
+      >
         {{#if this.isSubmitting}}
-          <i class="fas fa-spinner fa-spin"></i> Creating Ticket...
+          <i class="fas fa-spinner fa-spin"></i>
+          Creating Ticket...
         {{else}}
-          <i class="fas fa-paper-plane"></i> Submit Ticket
+          <i class="fas fa-paper-plane"></i>
+          Submit Ticket
         {{/if}}
       </button>
     </div>

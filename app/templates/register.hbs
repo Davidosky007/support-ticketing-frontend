@@ -1,46 +1,83 @@
 <div class="auth-container">
   <div class="auth-card">
     <h2>Create an Account</h2>
-    
+
     <form {{on "submit" this.handleRegister}}>
       <div class="form-group">
         <label for="name">Full Name</label>
-        <input type="text" id="name" placeholder="John Doe" value={{this.name}} {{on "input" this.updateName}} required>
+        <input
+          type="text"
+          id="name"
+          placeholder="John Doe"
+          value={{this.name}}
+          {{on "input" this.updateName}}
+          required
+        />
       </div>
-      
+
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" placeholder="your@email.com" value={{this.email}} {{on "input" this.updateEmail}} required>
+        <input
+          type="email"
+          id="email"
+          placeholder="your@email.com"
+          value={{this.email}}
+          {{on "input" this.updateEmail}}
+          required
+        />
       </div>
-      
+
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="••••••••" value={{this.password}} {{on "input" this.updatePassword}} required>
+        <input
+          type="password"
+          id="password"
+          placeholder="••••••••"
+          value={{this.password}}
+          {{on "input" this.updatePassword}}
+          required
+        />
       </div>
-      
+
       <div class="form-group">
         <label>Account Type</label>
         <div class="role-options">
           <label class="role-radio">
-            <input type="radio" name="role" value="customer" checked={{eq this.role "customer"}} {{on "change" (fn this.setRole "customer")}}>
+            <input
+              type="radio"
+              name="role"
+              value="customer"
+              checked={{eq this.role "customer"}}
+              {{on "change" (fn this.setRole "customer")}}
+            />
             <span class="role-label">Customer</span>
           </label>
           <label class="role-radio">
-            <input type="radio" name="role" value="agent" checked={{eq this.role "agent"}} {{on "change" (fn this.setRole "agent")}}>
+            <input
+              type="radio"
+              name="role"
+              value="agent"
+              checked={{eq this.role "agent"}}
+              {{on "change" (fn this.setRole "agent")}}
+            />
             <span class="role-label">Support Agent</span>
           </label>
         </div>
       </div>
-      
+
       {{#if this.errorMessage}}
         <div class="error-message">{{this.errorMessage}}</div>
       {{/if}}
-      
-      <button type="submit" class="btn btn-primary btn-block" disabled={{this.isLoading}}>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+        disabled={{this.isLoading}}
+      >
         {{#if this.isLoading}}Creating account...{{else}}Create Account{{/if}}
       </button>
     </form>
-    
+
     <div class="auth-footer">
       <p>Already have an account? <a href="/login">Log In</a></p>
     </div>

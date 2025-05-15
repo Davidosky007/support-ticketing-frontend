@@ -2,19 +2,22 @@
   <div class="ticket-header">
     <div class="ticket-breadcrumb">
       <LinkTo @route="agent.tickets" class="breadcrumb-link">
-        <i class="fas fa-arrow-left"></i> Back to Tickets
+        <i class="fas fa-arrow-left"></i>
+        Back to Tickets
       </LinkTo>
     </div>
-    
+
     <div class="ticket-title-section">
-      <h2>Ticket #{{this.model.id}}: {{this.model.subject}}</h2>
-      <span class="status-badge {{this.model.status}}">{{this.model.status}}</span>
+      <h2>{{this.model.subject}}</h2>
+      <span
+        class="status-badge {{this.model.status}}"
+      >{{this.model.status}}</span>
     </div>
-    
+
     <div class="ticket-meta">
       <div class="meta-item">
-        <span class="meta-label">Customer:</span>
-        <span class="meta-value">{{this.model.customer.name}} ({{this.model.customer.email}})</span>
+        <span class="meta-label">Ticket ID:</span>
+        <span class="meta-value">{{this.model.id}}</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Created:</span>
@@ -25,77 +28,105 @@
         <span class="meta-value">{{format-date this.model.updatedAt}}</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Agent:</span>
+        <span class="meta-label">Customer:</span>
+        <span class="meta-value">{{this.model.customer.name}}
+          ({{this.model.customer.email}})</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Assigned to:</span>
         <span class="meta-value">
           {{#if this.model.agent}}
             {{this.model.agent.name}}
           {{else}}
-            <button class="btn-assign" {{on "click" (fn this.assignTicket this.model.id)}}>
+            <button
+              type="button"
+              {{on "click" (fn this.assignTicket this.model.id)}}
+              class="btn-assign"
+            >
               Assign to Me
             </button>
           {{/if}}
         </span>
       </div>
     </div>
-    
+
     {{#if this.model.agent}}
-      <div class="ticket-actions">
-        <div class="status-updater">
-          <span class="status-label">Update Status:</span>
-          <button class="btn-status {{if (eq this.model.status 'OPEN') 'active'}}" 
-              {{on "click" (fn this.updateTicketStatus "OPEN")}}>
-            Open
-          </button>
-          <button class="btn-status {{if (eq this.model.status 'IN_PROGRESS') 'active'}}" 
-              {{on "click" (fn this.updateTicketStatus "IN_PROGRESS")}}>
-            In Progress
-          </button>
-          <button class="btn-status {{if (eq this.model.status 'RESOLVED') 'active'}}" 
-              {{on "click" (fn this.updateTicketStatus "RESOLVED")}}>
-            Resolved
-          </button>
-          <button class="btn-status {{if (eq this.model.status 'CLOSED') 'active'}}" 
-              {{on "click" (fn this.updateTicketStatus "CLOSED")}}>
-            Closed
-          </button>
-        </div>
+      <div class="status-updater">
+        <span class="status-label">Update Status:</span>
+        <button
+          type="button"
+          {{on "click" (fn this.updateTicketStatus "OPEN")}}
+          class="btn-status {{if (eq this.model.status 'OPEN') 'active'}}"
+        >
+          Open
+        </button>
+        <button
+          type="button"
+          {{on "click" (fn this.updateTicketStatus "IN_PROGRESS")}}
+          class="btn-status
+            {{if (eq this.model.status 'IN_PROGRESS') 'active'}}"
+        >
+          In Progress
+        </button>
+        <button
+          type="button"
+          {{on "click" (fn this.updateTicketStatus "RESOLVED")}}
+          class="btn-status {{if (eq this.model.status 'RESOLVED') 'active'}}"
+        >
+          Resolved
+        </button>
+        <button
+          type="button"
+          {{on "click" (fn this.updateTicketStatus "CLOSED")}}
+          class="btn-status {{if (eq this.model.status 'CLOSED') 'active'}}"
+        >
+          Closed
+        </button>
       </div>
     {{/if}}
   </div>
-  
+
   <div class="ticket-content">
     <div class="ticket-description">
       <h3>Description</h3>
       <div class="description-content">
         {{this.model.description}}
       </div>
-      
+
       {{#if this.model.attachments.length}}
         <div class="ticket-attachments">
           <h4>Attachments</h4>
           <div class="attachments-list">
             {{#each this.model.attachments as |attachment|}}
-              <a href={{attachment.url}} target="_blank" class="attachment-item">
-                <i class="fas fa-paperclip"></i> {{attachment.filename}}
+              <a
+                href={{attachment.url}}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="attachment-item"
+              >
+                <i class="fas fa-paperclip"></i>
+                {{attachment.filename}}
               </a>
             {{/each}}
           </div>
         </div>
       {{/if}}
-      
-      <div class="email-notification-info">
-        <i class="fas fa-envelope"></i>
-        <span>Daily email reminders are sent for open tickets.</span>
-      </div>
     </div>
-    
+
     <div class="ticket-comments">
-      <h3>Conversation</h3>
-      
+      <h3>Conversation History</h3>
+
       {{#if this.model.comments.length}}
         <div class="comments-timeline">
           {{#each this.model.comments as |comment|}}
-            <div class="comment {{if (eq comment.user.role 'AGENT') 'agent-comment' 'customer-comment'}}">
+            <div
+              class="comment
+                {{if
+                  (eq comment.user.role 'AGENT')
+                  'agent-comment'
+                  'customer-comment'
+                }}"
+            >
               <div class="comment-avatar">
                 {{#if (eq comment.user.role "AGENT")}}
                   <i class="fas fa-headset"></i>
@@ -106,7 +137,9 @@
               <div class="comment-content">
                 <div class="comment-header">
                   <span class="comment-author">{{comment.user.name}}</span>
-                  <span class="comment-time">{{format-date comment.createdAt}}</span>
+                  <span class="comment-time">{{format-date
+                      comment.createdAt
+                    }}</span>
                 </div>
                 <div class="comment-body">
                   {{comment.content}}
@@ -116,19 +149,27 @@
           {{/each}}
         </div>
       {{else}}
-        <p class="no-comments">No comments yet.</p>
+        <div class="no-comments">
+          <p>No comments yet.</p>
+        </div>
       {{/if}}
-      
+
       <div class="comment-form">
         <h4>Add Reply</h4>
         <form {{on "submit" this.addComment}}>
+          <label for="comment-content" class="visually-hidden">Comment content</label>
           <textarea
+            id="comment-content"
             placeholder="Type your reply here..."
             value={{this.newComment}}
             {{on "input" this.updateComment}}
             required
           ></textarea>
-          <button type="submit" class="btn btn-primary" disabled={{this.isSubmitting}}>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            disabled={{this.isSubmitting}}
+          >
             {{#if this.isSubmitting}}Sending...{{else}}Send Reply{{/if}}
           </button>
         </form>

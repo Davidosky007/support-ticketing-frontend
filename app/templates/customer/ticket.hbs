@@ -1,21 +1,25 @@
 <div class="ticket-detail-container">
   {{#if this.isLoading}}
     <div class="loading-spinner">
-      <i class="fas fa-spinner fa-spin"></i> Loading ticket...
+      <i class="fas fa-spinner fa-spin"></i>
+      Loading ticket...
     </div>
   {{else if this.ticket}}
     <div class="ticket-header">
       <div class="ticket-breadcrumb">
         <LinkTo @route="customer.tickets" class="breadcrumb-link">
-          <i class="fas fa-arrow-left"></i> Back to Tickets
+          <i class="fas fa-arrow-left"></i>
+          Back to Tickets
         </LinkTo>
       </div>
-      
+
       <div class="ticket-title-section">
         <h2>{{this.ticket.subject}}</h2>
-        <span class="status-badge {{this.ticket.status}}">{{this.ticket.status}}</span>
+        <span
+          class="status-badge {{this.ticket.status}}"
+        >{{this.ticket.status}}</span>
       </div>
-      
+
       <div class="ticket-meta">
         <div class="meta-item">
           <span class="meta-label">Ticket ID:</span>
@@ -37,35 +41,47 @@
         {{/if}}
       </div>
     </div>
-    
+
     <div class="ticket-content">
       <div class="ticket-description">
         <h3>Description</h3>
         <div class="description-content">
           {{this.ticket.description}}
         </div>
-        
+
         {{#if this.ticket.attachments.length}}
           <div class="ticket-attachments">
             <h4>Attachments</h4>
             <div class="attachments-list">
               {{#each this.ticket.attachments as |attachment|}}
-                <a href={{attachment.url}} target="_blank" class="attachment-item">
-                  <i class="fas fa-paperclip"></i> {{attachment.filename}}
+                <a
+                  href={{attachment.url}}
+                  target="_blank"
+                  class="attachment-item"
+                >
+                  <i class="fas fa-paperclip"></i>
+                  {{attachment.filename}}
                 </a>
               {{/each}}
             </div>
           </div>
         {{/if}}
       </div>
-      
+
       <div class="ticket-comments">
         <h3>Conversation</h3>
-        
+
         {{#if this.ticket.comments.length}}
           <div class="comments-timeline">
             {{#each this.ticket.comments as |comment|}}
-              <div class="comment {{if (eq comment.user.role 'AGENT') 'agent-comment' 'customer-comment'}}">
+              <div
+                class="comment
+                  {{if
+                    (eq comment.user.role 'AGENT')
+                    'agent-comment'
+                    'customer-comment'
+                  }}"
+              >
                 <div class="comment-avatar">
                   {{#if (eq comment.user.role "AGENT")}}
                     <i class="fas fa-headset"></i>
@@ -76,7 +92,9 @@
                 <div class="comment-content">
                   <div class="comment-header">
                     <span class="comment-author">{{comment.user.name}}</span>
-                    <span class="comment-time">{{format-date comment.createdAt}}</span>
+                    <span class="comment-time">{{format-date
+                        comment.createdAt
+                      }}</span>
                   </div>
                   <div class="comment-body">
                     {{comment.content}}
@@ -88,7 +106,7 @@
         {{else}}
           <p class="no-comments">No replies yet.</p>
         {{/if}}
-        
+
         {{#if this.canComment}}
           <div class="comment-form">
             <h4>Add Reply</h4>
@@ -99,7 +117,11 @@
                 {{on "input" this.updateComment}}
                 required
               ></textarea>
-              <button type="submit" class="btn btn-primary" disabled={{this.isSubmitting}}>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                disabled={{this.isSubmitting}}
+              >
                 {{#if this.isSubmitting}}Sending...{{else}}Send Reply{{/if}}
               </button>
             </form>
@@ -107,7 +129,8 @@
         {{else if (not this.ticket.agentCommented)}}
           <div class="waiting-message">
             <i class="fas fa-info-circle"></i>
-            You'll be able to reply after a support agent responds to your ticket.
+            You'll be able to reply after a support agent responds to your
+            ticket.
           </div>
         {{/if}}
       </div>

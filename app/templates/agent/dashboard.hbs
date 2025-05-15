@@ -3,30 +3,45 @@
     <h1>Agent Dashboard</h1>
     <div class="dashboard-actions">
       <div class="export-container">
-        <button {{on "click" this.downloadTicketsCsv}} class="btn-export" disabled={{this.isLoading}}>
+        <button
+          type="button"
+          {{on "click" this.downloadTicketsCsv}}
+          class="btn-export"
+          disabled={{this.isLoading}}
+        >
           {{#if this.isLoading}}
-            <i class="fas fa-spinner fa-spin"></i> Generating...
+            <i class="fas fa-spinner fa-spin"></i>
+            Generating...
           {{else}}
-            <i class="fas fa-file-download"></i> Export Closed Tickets (Last 30 Days)
+            <i class="fas fa-file-download"></i>
+            Export Closed Tickets (Last 30 Days)
           {{/if}}
         </button>
         {{#if this.downloadError}}
           <div class="download-error">
-            <i class="fas fa-exclamation-circle"></i> {{this.downloadError}}
-            <button {{on "click" this.retryDownload}} class="btn-retry">
-              <i class="fas fa-sync-alt"></i> Retry
+            <i class="fas fa-exclamation-circle"></i>
+            {{this.downloadError}}
+            <button
+              type="button"
+              {{on "click" this.retryDownload}}
+              class="btn-retry"
+            >
+              <i class="fas fa-sync-alt"></i>
+              Retry
             </button>
           </div>
         {{/if}}
         <div class="tooltip">
           <i class="fas fa-info-circle"></i>
-          <span class="tooltip-text">Exports closed tickets from the last 30 days in CSV format. The backend may take a moment to generate the file.</span>
+          <span class="tooltip-text">Exports closed tickets from the last 30
+            days in CSV format. The backend may take a moment to generate the
+            file.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div style="overflow-x:auto;">
+  <div>
     <h2>My Assigned Tickets</h2>
     {{#if this.assignedTickets.length}}
       <div class="tickets-list">
@@ -44,12 +59,19 @@
             <div class="ticket-subject">{{ticket.subject}}</div>
             <div class="ticket-customer">{{ticket.customer.name}}</div>
             <div class="ticket-status">
-              <span class="status-badge {{ticket.status}}">{{ticket.status}}</span>
+              <span
+                class="status-badge {{ticket.status}}"
+              >{{ticket.status}}</span>
             </div>
             <div class="ticket-date">{{format-date ticket.createdAt}}</div>
             <div class="ticket-actions">
-              <LinkTo @route="agent.ticket" @model={{ticket.id}} class="btn-view">
-                <i class="fas fa-eye"></i> View
+              <LinkTo
+                @route="agent.ticket"
+                @model={{ticket.id}}
+                class="btn-view"
+              >
+                <i class="fas fa-eye"></i>
+                View
               </LinkTo>
             </div>
           </div>
@@ -82,15 +104,26 @@
             <div class="ticket-subject">{{ticket.subject}}</div>
             <div class="ticket-customer">{{ticket.customer.name}}</div>
             <div class="ticket-status">
-              <span class="status-badge {{ticket.status}}">{{ticket.status}}</span>
+              <span
+                class="status-badge {{ticket.status}}"
+              >{{ticket.status}}</span>
             </div>
             <div class="ticket-date">{{format-date ticket.createdAt}}</div>
             <div class="ticket-actions">
-              <button class="btn-assign" {{on "click" (fn this.assignTicket ticket.id)}}>
+              <button
+                type="button"
+                class="btn-assign"
+                {{on "click" (fn this.assignTicket ticket.id)}}
+              >
                 Assign to Me
               </button>
-              <LinkTo @route="agent.ticket" @model={{ticket.id}} class="btn-view">
-                <i class="fas fa-eye"></i> View
+              <LinkTo
+                @route="agent.ticket"
+                @model={{ticket.id}}
+                class="btn-view"
+              >
+                <i class="fas fa-eye"></i>
+                View
               </LinkTo>
             </div>
           </div>

@@ -1,0 +1,48 @@
+/* Visual helper class for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Fix for dashboard section margins */
+.ticket-section {
+  margin-bottom: 1.5rem;
+}
+
+/* Fix for status badge classes */
+.status-badge.open {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-badge.in-progress {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.status-badge.resolved {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.status-badge.closed {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}
+
+/* Fixed color function notation */
+.ticket-content {
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+
+/* Fixed alpha values */
+.tooltip-overlay {
+  background-color: rgb(0 0 0 / 30%);
+}

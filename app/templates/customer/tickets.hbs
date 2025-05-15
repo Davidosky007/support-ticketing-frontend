@@ -2,13 +2,15 @@
   <div class="tickets-header">
     <h2>My Support Tickets</h2>
     <LinkTo @route="customer.new-ticket" class="btn btn-primary">
-      <i class="fas fa-plus"></i> Create New Ticket
+      <i class="fas fa-plus"></i>
+      Create New Ticket
     </LinkTo>
   </div>
 
   {{#if this.isLoading}}
     <div class="loading-spinner">
-      <i class="fas fa-spinner fa-spin"></i> Loading tickets...
+      <i class="fas fa-spinner fa-spin"></i>
+      Loading tickets...
     </div>
   {{else if this.tickets.length}}
     <div class="tickets-list">
@@ -19,18 +21,25 @@
         <div class="ticket-date">Date</div>
         <div class="ticket-actions">Actions</div>
       </div>
-      
+
       {{#each this.tickets as |ticket|}}
         <div class="tickets-grid ticket-row {{ticket.status}}">
           <div class="ticket-id">{{ticket.id}}</div>
           <div class="ticket-subject">{{ticket.subject}}</div>
           <div class="ticket-status">
-            <span class="status-badge {{ticket.status}}">{{ticket.status}}</span>
+            <span
+              class="status-badge {{ticket.status}}"
+            >{{ticket.status}}</span>
           </div>
           <div class="ticket-date">{{format-date ticket.createdAt}}</div>
           <div class="ticket-actions">
-            <LinkTo @route="customer.ticket" @model={{ticket.id}} class="btn-view">
-              <i class="fas fa-eye"></i> View
+            <LinkTo
+              @route="customer.ticket"
+              @model={{ticket.id}}
+              class="btn-view"
+            >
+              <i class="fas fa-eye"></i>
+              View
             </LinkTo>
           </div>
         </div>
