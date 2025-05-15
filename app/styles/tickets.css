@@ -39,4 +39,34 @@
   background-color: #138496;
 }
 
+.download-error {
+  background-color: #fff6f6;
+  border-left: 3px solid #d95252;
+  color: #9f3a38;
+  padding: 8px 12px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 100%;
+}
+
+.btn-retry {
+  background: none;
+  border: 1px solid #9f3a38;
+  color: #9f3a38;
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-retry:hover {
+  background-color: #9f3a38;
+  color: white;
+}
+
 /* ...existing code... */

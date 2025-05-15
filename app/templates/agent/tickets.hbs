@@ -14,13 +14,27 @@
         <i class="fas fa-sync-alt"></i> Refresh
       </button>
       
-      <button {{on "click" this.downloadTicketsCsv}} class="btn-export" disabled={{this.isLoading}}>
-        {{#if this.isLoading}}
-          <i class="fas fa-spinner fa-spin"></i> Generating...
-        {{else}}
-          <i class="fas fa-file-download"></i> Export Closed Tickets (Last Month)
+      <div class="export-container">
+        <button {{on "click" this.downloadTicketsCsv}} class="btn-export" disabled={{this.isLoading}}>
+          {{#if this.isLoading}}
+            <i class="fas fa-spinner fa-spin"></i> Generating...
+          {{else}}
+            <i class="fas fa-file-download"></i> Export Closed Tickets (Last 90 Days)
+          {{/if}}
+        </button>
+        {{#if this.downloadError}}
+          <div class="download-error">
+            <i class="fas fa-exclamation-circle"></i> {{this.downloadError}}
+            <button {{on "click" this.retryDownload}} class="btn-retry">
+              <i class="fas fa-sync-alt"></i> Retry
+            </button>
+          </div>
         {{/if}}
-      </button>
+        <div class="tooltip">
+          <i class="fas fa-info-circle"></i>
+          <span class="tooltip-text">Exports closed tickets from the last 90 days in CSV format. The backend may take a moment to generate the file.</span>
+        </div>
+      </div>
     </div>
   </div>
 

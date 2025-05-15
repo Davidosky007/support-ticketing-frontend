@@ -9,6 +9,7 @@ export default class AgentDashboardController extends Controller {
   @service router;
 
   @tracked isLoading = false;
+  @tracked downloadError = null;
 
   get assignedTickets() {
     let user = this.session.data.authenticated.user;
@@ -63,22 +64,28 @@ export default class AgentDashboardController extends Controller {
   @action
   async downloadTicketsCsv() {
     this.isLoading = true;
+    this.downloadError = null;
+
     try {
-      // Calculate dates for last month
-      const today = new Date();
-      const endDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
-      );
-      const startDate = new Date(
-        today.getFullYear(),
-        today.getMonth() - 1,
-        today.getDate(),
+      // Get current date for end date
+      const endDate = new Date();
+
+      // Start date should be 90 days ago from today (not from 2025)
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - 90);
+
+      // Validate that dates are not in the future
+      const now = new Date();
+      if (startDate > now || endDate > now) {
+        throw new Error('Cannot use future dates for ticket export');
+      }
+
+      console.log(
+        `Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`,
       );
 
       const mutation = `
-        mutation GenerateTicketsCsv($status: String!, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+        mutation GenerateTicketsCsv($status: String, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
           generateTicketsCsv(input: {
             status: $status,
             startDate: $startDate,
@@ -91,13 +98,18 @@ export default class AgentDashboardController extends Controller {
       `;
 
       const variables = {
-        status: 'CLOSED', // This needs to match the $status variable in the mutation
+        status: 'closed', // Use lowercase as the server expects
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
       };
 
-      console.log('Generating CSV with variables:', variables);
+      console.log('Request variables:', JSON.stringify(variables, null, 2));
+
       const result = await this.apollo.mutate({ mutation, variables });
+
+      if (!result || !result.generateTicketsCsv) {
+        throw new Error('Invalid response from server');
+      }
 
       if (
         result.generateTicketsCsv.errors &&
@@ -106,13 +118,28 @@ export default class AgentDashboardController extends Controller {
         throw new Error(result.generateTicketsCsv.errors[0]);
       }
 
-      // Open the CSV file URL in a new tab
-      window.open(result.generateTicketsCsv.url, '_blank');
+      const url = result.generateTicketsCsv.url;
+      if (!url) {
+        throw new Error('No download URL was returned');
+      }
+
+      // Create a programmatic download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'closed_tickets.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Error generating CSV:', error);
-      alert('Error generating CSV: ' + error.message);
+      this.downloadError = error.message || 'Failed to generate CSV report';
     } finally {
       this.isLoading = false;
     }
+  }
+
+  @action
+  retryDownload() {
+    this.downloadTicketsCsv();
   }
 }

@@ -13,6 +13,22 @@ export default class AgentTicketsController extends Controller {
   @tracked statusFilter = 'ALL';
   @tracked selectedFile = null;
   @tracked uploadingFile = false;
+  @tracked downloadError = null;
+  @tracked lastDownloadUrl = null;
+
+  // Define the mutation properly
+  generateTicketsCsvMutation = `
+    mutation GenerateTicketsCsv($status: String, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
+      generateTicketsCsv(input: {
+        status: $status,
+        startDate: $startDate,
+        endDate: $endDate
+      }) {
+        url
+        errors
+      }
+    }
+  `;
 
   // Assigned tickets: agent matches current user
   get assignedTickets() {
@@ -47,43 +63,86 @@ export default class AgentTicketsController extends Controller {
   @action
   async downloadTicketsCsv() {
     this.isLoading = true;
-    try {
-      // Calculate last month's date range more precisely
-      const today = new Date();
-      const lastMonth = new Date(today);
-      lastMonth.setMonth(today.getMonth() - 1);
+    this.downloadError = null;
 
-      // First day of last month
-      const startDate = new Date(
-        lastMonth.getFullYear(),
-        lastMonth.getMonth(),
-        1,
-      );
-      // Last day of last month
-      const endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+    try {
+      // Get current date for end date
+      const endDate = new Date();
+
+      // Start date should be 90 days ago from today (not from 2025)
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - 90);
+
+      // Validate that dates are not in the future
+      const now = new Date();
+      if (startDate > now || endDate > now) {
+        throw new Error('Cannot use future dates for ticket export');
+      }
 
       console.log(
         `Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`,
       );
 
-      // Use the generateTicketsCsv method from the route
-      const csvUrl = await this.target.currentRoute.instance.generateTicketsCsv(
-        'CLOSED',
-        startDate.toISOString(),
-        endDate.toISOString(),
+      const response = await this.apollo.mutate({
+        mutation: this.generateTicketsCsvMutation,
+        variables: {
+          status: 'closed', // Use lowercase as the server expects
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        },
+      });
+
+      console.log(
+        'Variables sent:',
+        JSON.stringify(
+          {
+            status: 'closed',
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
+          null,
+          2,
+        ),
       );
 
-      // Open CSV in new window
-      if (csvUrl) {
-        window.open(csvUrl, '_blank');
-      } else {
-        throw new Error('No URL returned for CSV download');
+      if (!response || !response.generateTicketsCsv) {
+        throw new Error('Invalid response from server');
       }
+
+      const { url, errors } = response.generateTicketsCsv;
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.join(', '));
+      }
+
+      if (!url) {
+        throw new Error('No download URL returned from server');
+      }
+
+      // Store the URL for retry functionality
+      this.lastDownloadUrl = url;
+
+      // Provide more direct access to the file
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'closed_tickets.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
-      console.error('Error generating CSV:', error);
-      alert(`Error generating CSV: ${error.message}`);
+      console.error('CSV download failed:', error);
+      this.downloadError = `Download failed: ${error.message || 'Unknown error'}`;
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  @action
+  retryDownload() {
+    if (this.lastDownloadUrl) {
+      window.open(this.lastDownloadUrl, '_blank');
+    } else {
+      this.downloadTicketsCsv();
     }
   }
 
