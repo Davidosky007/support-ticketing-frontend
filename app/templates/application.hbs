@@ -4,37 +4,35 @@
   <header class="navbar">
     <div class="navbar-container">
       <div class="navbar-brand">
-        <a href="/" class="logo">Support Ticketing</a>
+        <LinkTo @route="index" class="logo">Support Ticketing System</LinkTo>
       </div>
-
-      <nav class="navbar-menu">
+      <div class="navbar-menu">
         {{#if this.session.isAuthenticated}}
-          {{#if this.session.isAgent}}
+          {{#if this.session.data.authenticated.user.isAgent}}
             <LinkTo @route="agent.dashboard" class="nav-item">Dashboard</LinkTo>
             <LinkTo @route="agent.tickets" class="nav-item">Tickets</LinkTo>
           {{else}}
             <LinkTo @route="customer.tickets" class="nav-item">My Tickets</LinkTo>
             <LinkTo @route="customer.new-ticket" class="nav-item">New Ticket</LinkTo>
           {{/if}}
-          <button
-            class="nav-item btn-logout"
-            {{on "click" this.logout}}
-          >Logout</button>
+          <button {{on "click" this.invalidateSession}} class="btn-logout" type="button">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
         {{else}}
-          <LinkTo @route="login" class="nav-item btn-login">Login</LinkTo>
-          <LinkTo @route="register" class="nav-item btn-signup">Sign Up</LinkTo>
+          <LinkTo @route="login" class="btn-login">Login</LinkTo>
+          <LinkTo @route="register" class="btn-signup">Sign Up</LinkTo>
         {{/if}}
-      </nav>
+      </div>
     </div>
   </header>
 
-  <main>
+  <main class="main-content">
     {{outlet}}
   </main>
 
   <footer class="footer">
     <div class="container">
-      <p>© {{this.currentYear}} Support Ticketing System</p>
+      <p>&copy; {{this.currentYear}} Support Ticketing System. All rights reserved.</p>
     </div>
   </footer>
 </div>

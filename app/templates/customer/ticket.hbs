@@ -57,6 +57,7 @@
                 <a
                   href={{attachment.url}}
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="attachment-item"
                 >
                   <i class="fas fa-paperclip"></i>
@@ -111,12 +112,15 @@
           <div class="comment-form">
             <h4>Add Reply</h4>
             <form {{on "submit" this.addComment}}>
-              <textarea
-                placeholder="Type your reply here..."
-                value={{this.newComment}}
-                {{on "input" this.updateComment}}
-                required
-              ></textarea>
+              <div class="form-group">
+                <label for="comment-input">Your reply</label>
+                <textarea
+                  id="comment-input"
+                  {{on "input" this.updateCommentText}}
+                  value={{this.commentText}}
+                  placeholder="Type your reply here..."
+                ></textarea>
+              </div>
               <button
                 type="submit"
                 class="btn btn-primary"

@@ -5,8 +5,9 @@
   margin-bottom: 20px;
   width: 93% !important; /* Added !important to override any conflicting styles */
   box-sizing: border-box;
-  /* Add a subtle border to visualize the header dimensions */
   padding: 10px 0;
+
+  /* Add a subtle border to visualize the header dimensions */
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -85,19 +86,24 @@
   box-sizing: border-box;
   background: #fff;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 5%);
   overflow-x: auto;
 }
 
-/* Fix media query syntax to use standard notation */
-@media (min-width: 1280px) {
+.role-option.selected {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Fix media query syntax */
+@media (width >= 1280px) {
   .dashboard-container {
     max-width: 100vw;
     padding: 1rem;
   }
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
   .dashboard-container {
     padding: 0.5rem;
   }
