@@ -131,7 +131,7 @@ export default class AgentTicketController extends Controller {
         case 'OPEN':
           backendStatus = 'open';
           break;
-        case 'IN_PROGRESS':
+        case 'PENDING':
           backendStatus = 'pending';
           break;
         case 'RESOLVED':

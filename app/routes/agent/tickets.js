@@ -65,7 +65,7 @@ export default class AgentTicketsRoute extends Route {
         case 'OPEN':
           backendStatus = 'open';
           break;
-        case 'IN_PROGRESS':
+        case 'PENDING':
           backendStatus = 'pending';
           break;
         case 'RESOLVED':

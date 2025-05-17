@@ -62,9 +62,9 @@
         </button>
         <button
           type="button"
-          {{on "click" (fn this.updateTicketStatus "IN_PROGRESS")}}
+          {{on "click" (fn this.updateTicketStatus "PENDING")}}
           class="btn-status
-            {{if (eq this.model.status 'IN_PROGRESS') 'active'}}"
+            {{if (eq this.model.status 'PENDING') 'active'}}"
         >
           In Progress
         </button>

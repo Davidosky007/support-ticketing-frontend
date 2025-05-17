@@ -11,7 +11,7 @@ module('Unit | Controller | agent/tickets', function (hooks) {
     controller.tickets = [
       { id: '1', status: 'OPEN' },
       { id: '2', status: 'CLOSED' },
-      { id: '3', status: 'IN_PROGRESS' },
+      { id: '3', status: 'PENDING' },
     ];
 
     assert.strictEqual(
