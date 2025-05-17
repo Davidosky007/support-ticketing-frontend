@@ -11,14 +11,23 @@ export default class AgentDashboardController extends Controller {
   @tracked isLoading = false;
   @tracked downloadError = null;
 
+  get sortedTickets() {
+    // Sort all tickets by creation date (newest first)
+    return [...this.model].sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+  }
+
   get assignedTickets() {
     let user = this.session.data.authenticated.user;
     if (!user) return [];
-    return this.model.filter((t) => t.agent && t.agent.id === user.id);
+    // Return sorted assigned tickets
+    return this.sortedTickets.filter((t) => t.agent && t.agent.id === user.id);
   }
 
   get unassignedTickets() {
-    return this.model.filter((t) => t.status === 'OPEN' && !t.agent);
+    // Return sorted unassigned tickets
+    return this.sortedTickets.filter((t) => t.status === 'OPEN' && !t.agent);
   }
 
   @action

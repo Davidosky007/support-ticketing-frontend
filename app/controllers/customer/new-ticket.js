@@ -29,7 +29,21 @@ export default class CustomerNewTicketController extends Controller {
 
   @action
   handleFileChange(event) {
-    this.selectedFiles = event.target.files;
+    const files = event.target.files;
+    const validFiles = Array.from(files).filter((file) => {
+      const fileType = file.type.toLowerCase();
+      return fileType.includes('image/') || fileType === 'application/pdf';
+    });
+
+    if (validFiles.length !== files.length) {
+      this.errorMessage =
+        'Some files were rejected. Only images and PDFs are allowed.';
+      setTimeout(() => {
+        this.errorMessage = '';
+      }, 3000);
+    }
+
+    this.selectedFiles = validFiles;
   }
 
   @action

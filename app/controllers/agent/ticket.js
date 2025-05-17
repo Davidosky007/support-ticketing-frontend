@@ -35,17 +35,16 @@ export default class AgentTicketController extends Controller {
       const variables = { ticketId };
 
       const result = await this.apollo.mutate({ mutation, variables });
-
       if (result.assignTicket.errors && result.assignTicket.errors.length > 0) {
         throw new Error(result.assignTicket.errors[0]);
       }
 
-      // Update the model after successful assignment
-      this.model.agent = result.assignTicket.ticket.agent;
-      this.model.status = result.assignTicket.ticket.status;
-
-      // Refresh the page to show the updated ticket
-      this.router.refresh();
+      // Create a new model object to trigger reactivity
+      this.model = {
+        ...this.model,
+        agent: result.assignTicket.ticket.agent,
+        status: result.assignTicket.ticket.status,
+      };
 
       return result.assignTicket.ticket;
     } catch (error) {
@@ -99,7 +98,6 @@ export default class AgentTicketController extends Controller {
       };
 
       const result = await this.apollo.mutate({ mutation, variables });
-
       if (
         result.createComment.errors &&
         result.createComment.errors.length > 0
@@ -107,11 +105,11 @@ export default class AgentTicketController extends Controller {
         throw new Error(result.createComment.errors[0]);
       }
 
-      // Add the new comment to the model's comments
-      this.model.comments = [
-        ...this.model.comments,
-        result.createComment.comment,
-      ];
+      // Create a new model object to trigger reactivity
+      this.model = {
+        ...this.model,
+        comments: [...this.model.comments, result.createComment.comment],
+      };
 
       // Clear the comment input
       this.newComment = '';
@@ -122,12 +120,28 @@ export default class AgentTicketController extends Controller {
       this.isSubmitting = false;
     }
   }
-
   @action
   async updateTicketStatus(status) {
     this.isLoading = true;
 
     try {
+      // Map frontend status values to backend expected values
+      let backendStatus;
+      switch (status) {
+        case 'OPEN':
+          backendStatus = 'open';
+          break;
+        case 'IN_PROGRESS':
+          backendStatus = 'pending';
+          break;
+        case 'RESOLVED':
+        case 'CLOSED':
+          backendStatus = 'closed';
+          break;
+        default:
+          backendStatus = status.toLowerCase();
+      }
+
       const mutation = `
         mutation UpdateTicketStatus($ticketId: ID!, $status: String!) {
           updateTicketStatus(input: {
@@ -145,11 +159,10 @@ export default class AgentTicketController extends Controller {
 
       const variables = {
         ticketId: this.model.id,
-        status: status,
+        status: backendStatus,
       };
 
       const result = await this.apollo.mutate({ mutation, variables });
-
       if (
         result.updateTicketStatus.errors &&
         result.updateTicketStatus.errors.length > 0
@@ -157,8 +170,11 @@ export default class AgentTicketController extends Controller {
         throw new Error(result.updateTicketStatus.errors[0]);
       }
 
-      // Update the model's status
-      this.model.status = result.updateTicketStatus.ticket.status;
+      // Create a new model object to trigger reactivity
+      this.model = {
+        ...this.model,
+        status: result.updateTicketStatus.ticket.status,
+      };
     } catch (error) {
       console.error('Error updating ticket status:', error);
       alert('Failed to update ticket status. Please try again.');

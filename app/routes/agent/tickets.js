@@ -57,9 +57,25 @@ export default class AgentTicketsRoute extends Route {
     controller.updateTicketStatus = this.updateTicketStatus.bind(this);
     controller.generateTicketsCsv = this.generateTicketsCsv.bind(this);
   }
-
   async updateTicketStatus(ticketId, status) {
     try {
+      // Map frontend status values to backend expected values
+      let backendStatus;
+      switch (status) {
+        case 'OPEN':
+          backendStatus = 'open';
+          break;
+        case 'IN_PROGRESS':
+          backendStatus = 'pending';
+          break;
+        case 'RESOLVED':
+        case 'CLOSED':
+          backendStatus = 'closed';
+          break;
+        default:
+          backendStatus = status.toLowerCase();
+      }
+
       const mutation = `
         mutation UpdateTicketStatus($ticketId: ID!, $status: String!) {
           updateTicketStatus(input: {
@@ -77,7 +93,7 @@ export default class AgentTicketsRoute extends Route {
 
       const variables = {
         ticketId,
-        status,
+        status: backendStatus,
       };
 
       const result = await this.apollo.mutate({ mutation, variables });

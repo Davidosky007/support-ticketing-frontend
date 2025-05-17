@@ -34,20 +34,31 @@ export default class AgentTicketsController extends Controller {
   get assignedTickets() {
     let user = this.session.data.authenticated.user;
     if (!user) return [];
-    return this.tickets.filter((t) => t.agent && t.agent.id === user.id);
+    // Sort by creation date (newest first)
+    return this.tickets
+      .filter((t) => t.agent && t.agent.id === user.id)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   // Unassigned tickets: status OPEN and agent is null
   get unassignedTickets() {
-    return this.tickets.filter((t) => t.status === 'OPEN' && !t.agent);
+    // Sort by creation date (newest first)
+    return this.tickets
+      .filter((t) => t.status === 'OPEN' && !t.agent)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   // Filtered tickets (all tickets, not just unassigned)
   get filteredTickets() {
-    if (this.statusFilter === 'ALL') {
-      return this.tickets;
-    }
-    return this.tickets.filter((ticket) => ticket.status === this.statusFilter);
+    let filtered =
+      this.statusFilter === 'ALL'
+        ? this.tickets
+        : this.tickets.filter((ticket) => ticket.status === this.statusFilter);
+
+    // Sort by creation date (newest first)
+    return filtered.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
   }
 
   @action
