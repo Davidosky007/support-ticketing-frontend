@@ -86,13 +86,13 @@
   box-sizing: border-box;
   background: #fff;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 5%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 5%);
   overflow-x: auto;
 }
 
 .role-option.selected {
   border-color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.05);
+  background-color: rgb(59 130 246 / 5%);
 }
 
 /* Fix media query syntax */

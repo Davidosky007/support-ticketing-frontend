@@ -191,13 +191,6 @@ body {
   border: 2px solid white;
 }
 
-.btn-export:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
-
 .btn-export {
   background-color: #28a745;
   color: white;
@@ -211,6 +204,9 @@ body {
   font-weight: 500;
   transition: background-color 0.2s;
 }
+
+
+
 
 
 
@@ -1207,6 +1203,13 @@ body {
   min-width: 90px;
   margin-bottom: 0.5rem;
 }
+
+.btn-export:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 
 @media (width <= 600px) {
   .btn,
