@@ -17,7 +17,6 @@ export default class ApolloService extends Service {
   }
 
   async request(operationString, variables = {}) {
-    console.log('Apollo making request:', { operationString, variables });
 
     const headers = {
       'Content-Type': 'application/json',
@@ -39,7 +38,6 @@ export default class ApolloService extends Service {
       });
 
       const json = await response.json();
-      console.log('Apollo response:', json);
 
       if (json.errors) {
         throw new Error(json.errors[0].message);

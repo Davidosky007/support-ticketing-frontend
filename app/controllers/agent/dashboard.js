@@ -89,9 +89,6 @@ export default class AgentDashboardController extends Controller {
         throw new Error('Cannot use future dates for ticket export');
       }
 
-      console.log(
-        `Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`,
-      );
 
       const mutation = `
         mutation GenerateTicketsCsv($status: String, $startDate: ISO8601DateTime, $endDate: ISO8601DateTime) {
@@ -112,7 +109,6 @@ export default class AgentDashboardController extends Controller {
         endDate: endDate.toISOString(),
       };
 
-      console.log('Request variables:', JSON.stringify(variables, null, 2));
 
       const result = await this.apollo.mutate({ mutation, variables });
 

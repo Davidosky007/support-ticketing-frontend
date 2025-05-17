@@ -42,11 +42,7 @@ export default class RegisterController extends Controller {
     this.errorMessage = null;
 
     try {
-      console.log('Attempting registration:', {
-        email: this.email,
-        name: this.name,
-        role: this.role,
-      });
+  
 
       // Expected register mutation structure
       const mutation = `
@@ -91,7 +87,7 @@ export default class RegisterController extends Controller {
       );
 
       const result = await response.json();
-      console.log('Registration response:', result);
+    
 
       if (
         result.errors ||

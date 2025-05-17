@@ -30,7 +30,7 @@ export default class LoginController extends Controller {
     this.errorMessage = null;
 
     try {
-      console.log('Attempting login with:', { email: this.email });
+    
 
       const mutation = `
         mutation Login($email: String!, $password: String!) {
@@ -71,7 +71,7 @@ export default class LoginController extends Controller {
       );
 
       const result = await response.json();
-      console.log('Login response:', result);
+    
 
       if (
         result.errors ||

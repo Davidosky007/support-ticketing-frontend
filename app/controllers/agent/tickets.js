@@ -90,9 +90,7 @@ export default class AgentTicketsController extends Controller {
         throw new Error('Cannot use future dates for ticket export');
       }
 
-      console.log(
-        `Exporting tickets from ${startDate.toISOString()} to ${endDate.toISOString()}`,
-      );
+  
 
       const response = await this.apollo.mutate({
         mutation: this.generateTicketsCsvMutation,
@@ -103,18 +101,7 @@ export default class AgentTicketsController extends Controller {
         },
       });
 
-      console.log(
-        'Variables sent:',
-        JSON.stringify(
-          {
-            status: 'closed',
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          },
-          null,
-          2,
-        ),
-      );
+  
 
       if (!response || !response.generateTicketsCsv) {
         throw new Error('Invalid response from server');
