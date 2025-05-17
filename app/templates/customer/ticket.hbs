@@ -113,11 +113,10 @@
             <h4>Add Reply</h4>
             <form {{on "submit" this.addComment}}>
               <div class="form-group">
-                <label for="comment-input">Your reply</label>
-                <textarea
+                <label for="comment-input">Your reply</label>                <textarea
                   id="comment-input"
-                  {{on "input" this.updateCommentText}}
-                  value={{this.commentText}}
+                  {{on "input" this.updateComment}}
+                  value={{this.newComment}}
                   placeholder="Type your reply here..."
                 ></textarea>
               </div>

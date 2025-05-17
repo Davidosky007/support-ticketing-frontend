@@ -20,7 +20,6 @@ export default class CustomerTicketController extends Controller {
   updateComment(event) {
     this.newComment = event.target.value;
   }
-
   @action
   async addComment(event) {
     event.preventDefault();
@@ -67,11 +66,11 @@ export default class CustomerTicketController extends Controller {
         throw new Error(result.createComment.errors[0]);
       }
 
-      // Add the new comment to the ticket
-      this.ticket.comments = [
-        ...this.ticket.comments,
-        result.createComment.comment,
-      ];
+      // Create a new ticket object with updated comments to trigger reactivity
+      this.ticket = {
+        ...this.ticket,
+        comments: [...this.ticket.comments, result.createComment.comment],
+      };
 
       // Clear the comment input
       this.newComment = '';
